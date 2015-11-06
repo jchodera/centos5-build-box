@@ -1,17 +1,13 @@
 FROM phusion/holy-build-box-64
 
 # Install EPL
-ADD http://download.fedoraproject.org/pub/epel/5/x86_64/epel-release-5-4.noarch.rpm .
-RUN rpm -i --quiet epel-release-5-4.noarch.rpm
-#RUN yum upgrade -y --quiet ca-certificates --disablerepo=epel
+ADD http://download.fedoraproject.org/pub/epel/5/x86_64/epel-release-5-4.noarch.rpm /
+RUN rpm -i --quiet /epel-release-5-4.noarch.rpm
+RUN rm -f /epel-release-5-4.noarch.rpm
 
 # Install prerequisites
 #RUN yum install -y --quiet wget clang gcc gcc-c++ git scons redhat-lsb kernel-devel dkms cmake doxygen
 RUN yum install -y --quiet dkms libvdpau git wget
-
-# three necessary files
-ADD http://developer.download.nvidia.com/compute/cuda/7_0/Prod/local_installers/rpmdeb/cuda-repo-rhel6-7-0-local-7.0-28.x86_64.rpm .
-
 
 # Install TeX
 ADD http://ctan.mackichan.com/systems/texlive/tlnet/install-tl-unx.tar.gz .
@@ -21,7 +17,9 @@ RUN rm -rf install-tl-unx.tar.gz install-tl-*
 ENV PATH=/usr/local/texlive/2015/bin/x86_64-linux:$PATH
 
 # Install CUDA
-RUN rpm --quiet -i cuda-repo-rhel6-7-0-local-7.0-28.x86_64.rpm
+ADD http://developer.download.nvidia.com/compute/cuda/7_0/Prod/local_installers/rpmdeb/cuda-repo-rhel6-7-0-local-7.0-28.x86_64.rpm /
+RUN rpm --quiet -i /cuda-repo-rhel6-7-0-local-7.0-28.x86_64.rpm
+RUN RM -f /cuda-repo-rhel6-7-0-local-7.0-28.x86_64.rpm
 RUN yum clean -y --quiet expire-cache
 RUN yum install -y --quiet cuda-core-7-0-7.0-28.x86_64 cuda-cufft-dev-7-0-7.0-28.x86_64 cuda-cudart-dev-7-0-7.0-28.x86_64
 RUN rpm --quiet --nodeps -Uvh /var/cuda-repo-7-0-local/xorg-x11-drv-nvidia-libs-346.46-1.el6.x86_64.rpm
@@ -38,9 +36,10 @@ RUN yum clean -y --quiet all
 
 # Install AMD SDK for OpenCL
 ENV OPENCL_HOME=/opt/AMDAPPSDK-2.9-1 OPENCL_LIBPATH=/opt/AMDAPPSDK-2.9-1/lib/x86_64
-ADD http://jenkins.choderalab.org/userContent/AMD-APP-SDK-linux-v2.9-1.599.381-GA-x64.tar.bz2 .
-RUN tar xjf AMD-APP-SDK-linux-v2.9-1.599.381-GA-x64.tar.bz2
-RUN ./AMD-APP-SDK-v2.9-1.599.381-GA-linux64.sh -- -s -a yes
+ADD http://jenkins.choderalab.org/userContent/AMD-APP-SDK-linux-v2.9-1.599.381-GA-x64.tar.bz2 /
+RUN tar xjf /AMD-APP-SDK-linux-v2.9-1.599.381-GA-x64.tar.bz2
+RUN /AMD-APP-SDK-v2.9-1.599.381-GA-linux64.sh -- -s -a yes
+RUN rm -f AMD-APP-SDK-v2.9-1.599.381-GA-linux64.sh
 
 # Install Boost.
 ENV BOOST_PKG=boost_1_55_0 BOOST_SOURCE=$HOME/boost_1_55_0
