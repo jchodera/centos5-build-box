@@ -10,10 +10,11 @@ RUN rm -f /epel-release-5-4.noarch.rpm
 RUN yum install -y --quiet dkms libvdpau git wget
 
 # Install TeX
-ADD http://ctan.mackichan.com/systems/texlive/tlnet/install-tl-unx.tar.gz .
-RUN tar -xzf install-tl-unx.tar.gz
-RUN cd install-tl-*; ./install-tl -profile /io/devtools/texlive.profile; cd -
-RUN rm -rf install-tl-unx.tar.gz install-tl-*
+ADD http://ctan.mackichan.com/systems/texlive/tlnet/install-tl-unx.tar.gz /
+ADD https://raw.githubusercontent.com/omnia-md/virtual-machines/master/linux/texlive.profile /
+RUN tar -xzf /install-tl-unx.tar.gz
+RUN cd install-tl-*; ./install-tl -profile /texlive.profile; cd -
+RUN rm -rf /install-tl-unx.tar.gz install-tl-* /texlive.profile
 ENV PATH=/usr/local/texlive/2015/bin/x86_64-linux:$PATH
 
 # Install CUDA
